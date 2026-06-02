@@ -295,6 +295,81 @@ productController.getProducts = async (req: Request, res: Response) => {
   }
 };
 
+productController.getRecommendedProducts = async (req: ExtendedRequest, res: Response) => {
+  try {
+    console.log("getRecommendedProducts");
+
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(Math.max(1, Number(req.query.limit) || 10), 50);
+    const debugParam = String(req.query.debug ?? "").toLowerCase();
+    const debug = debugParam === "1" || debugParam === "true";
+
+    const rawUserId = extractUserIdFromReq(req);
+    const userId = rawUserId ? shapeIntoMongooseObjectId(rawUserId) : null;
+
+    const result = await productService.getRecommendedProducts(userId, { page, limit });
+
+    const response: any = {
+      success: true,
+      message: "Recommended products fetched successfully",
+      data: {
+        products: result.products,
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        hasNextPage: result.hasNextPage,
+      },
+    };
+
+    if (debug) {
+      response.recommendationType = result.recommendationType;
+      response.signals = result.signals;
+    }
+
+    res.status(HttpCode.OK).json(response);
+  } catch (err) {
+    console.log("Error, getRecommendedProducts:", err);
+    if (err instanceof Errors) res.status(err.code).json(err);
+    else res.status(Errors.standard.code).json(Errors.standard);
+  }
+};
+
+productController.getSimilarProducts = async (req: Request, res: Response) => {
+  try {
+    console.log("getSimilarProducts");
+
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(Math.max(1, Number(req.query.limit) || 10), 50);
+    const debugParam = String(req.query.debug ?? "").toLowerCase();
+    const debug = debugParam === "1" || debugParam === "true";
+
+    const result = await productService.getSimilarProducts(req.params.id, { page, limit });
+
+    const response: any = {
+      success: true,
+      message: "Similar products fetched successfully",
+      data: {
+        products: result.products,
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        hasNextPage: result.hasNextPage,
+      },
+    };
+
+    if (debug) {
+      response.recommendationType = result.recommendationType;
+      response.signals = result.signals;
+    }
+
+    res.status(HttpCode.OK).json(response);
+  } catch (err) {
+    console.log("Error, getSimilarProducts:", err);
+    if (err instanceof Errors) res.status(err.code).json(err);
+    else res.status(Errors.standard.code).json(Errors.standard);
+  }
+};
+
 
 
 function extractUserIdFromReq(req: ExtendedRequest): string | null {

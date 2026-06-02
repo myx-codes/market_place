@@ -83,3 +83,26 @@ export interface ProductAISearchFilters {
   maxPrice?: number;
   sort?: ProductSort;
 }
+
+export type ProductRecommendationType = "personalized" | "fallback" | "similar";
+
+export interface ProductRecommendationSignals {
+  categories: ProductCollection[];
+  types: ProductType[];
+  genders: ProductGender[];
+  units: ProductUnit[];
+  priceRange?: {
+    min: number;
+    max: number;
+  };
+}
+
+export interface ProductRecommendationResult {
+  products: Product[];
+  page: number;
+  limit: number;
+  total: number;
+  hasNextPage: boolean;
+  recommendationType: ProductRecommendationType;
+  signals?: ProductRecommendationSignals;
+}
