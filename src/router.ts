@@ -31,7 +31,6 @@ router.post("/auth/profile",
     userController.updateProfile
 );
 
-
 // Product
 router
 .get("/customer/products", productController.getProducts)

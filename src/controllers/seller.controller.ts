@@ -75,7 +75,14 @@ sellerController.goDashboard = async (req: SellerRequest, res: Response) => {
             productsCount,
             conversionRate,
             salesByDay,
-            topProducts
+            topProducts,
+            title: "Seller Dashboard | FENZO",
+            description: "Seller dashboard for managing revenue, orders, products, and sales performance on FENZO.",
+            keywords: "FENZO seller dashboard, ecommerce dashboard, sales analytics, product management",
+            siteName: "FENZO",
+            type: "website",
+            url: `${req.protocol}://${req.get("host")}/seller/dashboard`,
+            image: "/img/logoIcon.png",
         });
     } catch (err) {
         console.log("Error, goDashboard", err);
